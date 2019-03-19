@@ -1,0 +1,17 @@
+#include<opencv2/highgui/highgui.hpp>//highgui头文件
+#include<opencv2/imgproc/imgproc.hpp>//图像处理头文件
+
+using namespace cv;
+int main()
+{
+	Mat srcImage = imread("1.jpg");//载入原图
+	imshow("原图", srcImage);//显示原图
+	//腐蚀
+	Mat element = getStructuringElement(MORPH_RECT, Size(15, 15));
+	Mat dstImage;
+	erode(srcImage, dstImage, element);
+	//显示效果
+	imshow("腐蚀效果", dstImage);
+	waitKey(0);
+	return 0;
+}
