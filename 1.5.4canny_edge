@@ -1,0 +1,25 @@
+#include<opencv2/opencv.hpp>
+#include<opencv2/imgproc/imgproc.hpp>
+using namespace cv;
+int main()
+{
+	//读图
+	Mat srcImage = imread("1.jpg");
+	//显示
+	imshow("原图",srcImage);
+	//参数定义
+	Mat dstImage, edge, grayImage;
+	//创建与src同类型大小矩阵
+	dstImage.create(srcImage.size(), srcImage.type());
+	//灰度图像
+	cvtColor(srcImage, grayImage, COLOR_RGB2GRAY);
+	//降噪
+	blur(grayImage, edge, Size(3, 3));
+	//canny
+	Canny(edge, edge, 3, 9, 3);
+	//显示效果
+	imshow("canny边缘检测", edge);
+	waitKey(0);
+	return 0;
+
+}
