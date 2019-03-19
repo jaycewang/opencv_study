@@ -1,0 +1,9 @@
+#include <opencv2/opencv.hpp>
+using namespace cv;
+
+void main()
+{
+	Mat srcImage = imread("1.jpg");//载入图片
+	imshow("原图", srcImage);//显示图片
+	waitKey(0);//等待按键退出
+}
