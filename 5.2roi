@@ -1,0 +1,103 @@
+#include<opencv2/opencv.hpp>
+#include<opencv2/imgproc/imgproc.hpp>
+#include<iostream>
+using namespace std;
+using namespace cv;
+
+bool ROI_AddImage();
+bool LinearBlending();
+bool ROI_LinearBlending();
+
+int main()
+{
+	system("color 5E");
+	if (ROI_AddImage() && LinearBlending() && ROI_LinearBlending())
+	{
+		cout << endl << "运行成功，得出了你想要的图像：";
+	}
+	waitKey(0);
+	return 0;
+}
+
+bool ROI_LinearBlending()
+{
+	//读取图像
+	Mat srcImage4 = imread("dota_pa.jpg");
+	Mat logoImage = imread("dota_logo.jpg");
+	if (!srcImage4.data)
+	{
+		cout<<"读取srcImage4错误\n"<<endl;
+		return false;
+	}
+	if (!logoImage.data)
+	{
+		cout<<"读取srcImage错误\n"<<endl;
+			return false;
+	}
+	//2定义mat 设定roi
+	Mat imageROI;
+	imageROI = srcImage4(Rect(200, 250,logoImage.cols, logoImage.rows));
+	//3logo加导原图
+	addWeighted(imageROI, 0.5, logoImage, 0.3, 0., imageROI);
+	//4显示结果
+	namedWindow("4区域线性图像混合");
+	imshow("4区域线性图像混合", srcImage4);
+	return true;
+}
+
+
+bool ROI_AddImage()
+{
+	//1读入图像
+	Mat srcImage1 = imread("dota_pa.jpg");
+	Mat logoImage = imread("dota_logo.jpg");
+	if (!srcImage1.data)
+	{
+		cout<<"读取srcImage1错误！\n"<<endl;
+		return false;
+	}
+	if (!logoImage.data)
+	{
+		cout<<"读取logoImage错误！"<<endl;
+		return false;
+	}
+	//2定义Mat并设置ROI区域
+	Mat imageROI = srcImage1(Rect(200, 250, logoImage.cols, logoImage.rows));
+	//3加载掩模灰度图
+	Mat mask = imread("dota_logo.jpg", 0);
+	//4掩模复制到ROI
+	logoImage.copyTo(imageROI, mask);
+	//5显示结果
+	namedWindow("1利用ROI实现图像叠加到窗口");
+	imshow("1利用ROI实现图像叠加到窗口", srcImage1);
+	return true;
+}
+
+bool LinearBlending()
+{
+	double alphaValue = 0.5;
+	double betaValue;
+	Mat srcImage2, srcImage3, dstImage;
+	//1读取图像
+	srcImage2 = imread("mogu.jpg");
+	srcImage3 = imread("rain.jpg");
+	if (!srcImage2.data)
+	{
+		cout<<"读取srcImage2错误\n"<<endl;
+		return false;
+	}
+	if (!srcImage3.data)
+	{
+		cout<<"读取srcImage3错误\n"<<endl;
+		return false;
+	}
+	//2图像混合加权操作
+	betaValue = (1.0 - alphaValue);
+	addWeighted(srcImage2, alphaValue, srcImage3, betaValue, 0.0, dstImage);
+	//创建窗口显示
+	namedWindow("2线性混合原图", 1);
+	imshow("2线性混合原图", srcImage2);
+	namedWindow("3线性混合效果图");
+	imshow("3线性混合效果图", dstImage);
+	return true;
+}
